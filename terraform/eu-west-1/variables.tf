@@ -1,7 +1,11 @@
+  provider "aws" {
+    region = "eu-west-1"
+  }
+
 variable "azs" {
  type        = list(string)
  description = "List of Possible availability zones to be used"
- default     = ["eu-central-1a", "eu-central-1b"]
+ default     = ["eu-west-1a", "eu-west-1b"]
 }
 
 #Public cidrs for 3tier-arch
