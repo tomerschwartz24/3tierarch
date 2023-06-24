@@ -1,6 +1,7 @@
 #Create a VPC resource named 3tier-arch 
 resource "aws_vpc" "main" {
  cidr_block = "172.20.0.0/16"
+ enable_dns_hostnames = true
 
  tags = {
    Name = "3tier-arch"
@@ -60,7 +61,7 @@ resource "aws_eip" "EIP_3tier_arch" {
   }
 }
 
-#Route Table for Public Subnets
+#Route Table Creation for Public Subnets
 resource "aws_route_table" "three_tier_pub_RT" {
   vpc_id = aws_vpc.main.id
 
@@ -70,26 +71,37 @@ resource "aws_route_table" "three_tier_pub_RT" {
   }
 
   tags = {
-    Name = "3tier-public-subnet-route"
+    Name = "three-tier-public-subnet-route"
   }
 }
-#Associate Public Subnets with Public Route Table
-resource "aws_route_table_association" "three-tier-pub-RT-assoc" {
+
+#Route table Association with Public Subnets 
+resource "aws_route_table_association" "three_tier_pub_RT_assoc" {
     count          = length(aws_subnet.public_subnets)
     subnet_id      = "${aws_subnet.public_subnets[count.index].id}"
     route_table_id = "${aws_route_table.three_tier_pub_RT.id}"
 }
 
-#Route Table for Private Subnets
-#resource "aws_route_table" "3tier-priv-RT" {
-#  vpc_id = aws_vpc.main.id
 
-#  route {
-#    cidr_block = "0.0.0.0/0"
-#    gateway_id = aws_internet_gateway.ttier-gw.id
-#  }
 
-#  tags = {
-#    Name = "3tier-public-subnet-route"
-#  }
-#}
+
+#Route Table Creation for Private Subnets
+resource "aws_route_table" "three_tier_priv_RT" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.ngw.id
+  }
+
+  tags = {
+    Name = "three-tier-private-subnet-route"
+  }
+}
+
+#Route table Association with Private Subnets 
+resource "aws_route_table_association" "three_tier_priv_RT_assoc" {
+    count          = length(aws_subnet.private_subnets)
+    subnet_id      = "${aws_subnet.private_subnets[count.index].id}"
+    route_table_id = "${aws_route_table.three_tier_priv_RT.id}"
+}
