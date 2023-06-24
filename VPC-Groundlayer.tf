@@ -32,7 +32,7 @@ resource "aws_subnet" "private_subnets" {
 }
 
 # Create an Internet Gateway in order to access the internet 
-resource "aws_internet_gateway" "gw" {
+resource "aws_internet_gateway" "ttier-gw" {
  vpc_id = aws_vpc.main.id
  
  tags = {
@@ -59,3 +59,37 @@ resource "aws_eip" "EIP_3tier_arch" {
     Name = "3tier-arch-NATGatewayEIP"
   }
 }
+
+#Route Table for Public Subnets
+resource "aws_route_table" "three_tier_pub_RT" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.ttier-gw.id
+  }
+
+  tags = {
+    Name = "3tier-public-subnet-route"
+  }
+}
+#Associate Public Subnets with Public Route Table
+resource "aws_route_table_association" "three-tier-pub-RT-assoc" {
+    count          = length(aws_subnet.public_subnets)
+    subnet_id      = "${aws_subnet.public_subnets[count.index].id}"
+    route_table_id = "${aws_route_table.three_tier_pub_RT.id}"
+}
+
+#Route Table for Private Subnets
+#resource "aws_route_table" "3tier-priv-RT" {
+#  vpc_id = aws_vpc.main.id
+
+#  route {
+#    cidr_block = "0.0.0.0/0"
+#    gateway_id = aws_internet_gateway.ttier-gw.id
+#  }
+
+#  tags = {
+#    Name = "3tier-public-subnet-route"
+#  }
+#}
