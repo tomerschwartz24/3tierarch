@@ -5,3 +5,26 @@ private_subnets    =   ["172.20.3.0/24", "172.20.4.0/24", "172.20.5.0/24", "172.
 region             =   "eu-west-1"
 
 azs                =   ["eu-west-1a", "eu-west-1b"]
+
+#Strings 
+public_subnet_name  =   "tomers-public-sub-eu-west-1" 
+
+private_subnet_name =   "tomers-private-sub-eu-west-1"
+
+region              =   "eu-west-1"
+
+vpc_name            =   "tomers-vpc-eu-west-1"
+
+igw_name            =   "tomers-igw-eu-west-1"
+
+ngw_name            =   "tomers-natgateway-eu-west-1"
+
+EIP_name            =   "tomers-EIP-eu-west-1"
+
+vpc_cidr_block      =   "172.20.0.0/16"
+
+rt_full_out         =   "0.0.0.0/0"
+
+public_route_name   =   "tomers-pub-route-eu-west-1"
+
+private_route_name  =   "tomers-priv-route-eu-west-1"
